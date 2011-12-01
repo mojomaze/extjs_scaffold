@@ -1,0 +1,20 @@
+Description:
+    Installs Ext Application file and ux files needed for scaffold
+
+Example:
+    rails new MyCoolApp
+    rails generate extjs_scaffold:install
+
+    This will create:
+        app/assets/javascripts/MyCoolApp.js
+        app/assets/javascripts/model/ParentCombo.js
+        app/assets/javascripts/util/Format.js
+        app/assets/javascripts/ux/data/Actionable.js
+        app/assets/javascripts/ux/data/Updateable.js
+        app/assets/javascripts/ux/proxy/Rails.js
+        app/assets/javascripts/ux/form/Panel.js
+        app/assets/javascripts/ux/field/ParentCombo.js
+        app/assets/javascripts/ux/field/SearchField.js
+        app/assets/javascripts/ux/grid/Panel.js
+        app/assets/javascripts/ux/toolbar/Scrolling.js
+        app/assets/javascripts/ux/window/EditWindow.js
