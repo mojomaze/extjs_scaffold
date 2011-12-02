@@ -68,7 +68,8 @@ module ExtjsScaffold
       end
       
       def rails_app_name
-        Rails.root.to_s.split('/').last.capitalize
+        # get app name and convert to capcase
+        Rails.root.to_s.split('/').last.titlecase.split.join
       end
     end
   end

@@ -14,7 +14,7 @@ describe ExtjsScaffold::Generators::InstallGenerator do
     run_generator
   
     destination_root.should have_structure {
-      app_name = Rails.root.to_s.split('/').last.capitalize
+      app_name = Rails.root.to_s.split('/').last.titlecase.split.join
       
       no_file "non_existant.rb"
       directory "app" do
