@@ -3,14 +3,22 @@ require 'rails/generators/resource_helpers'
 
 module ExtjsScaffold
   module Generators
-    class ScaffoldControllerGenerator < Base
+    class CreateGenerator < Base
+      
       include Rails::Generators::ResourceHelpers
       
       argument :attributes, :type => :array, :default => [], :banner => "field:type field:type"
       
       class_option :orm, :desc => "ORM used to generate the controller"
       class_option :template_engine, :desc => "Template engine to generate view files"
+      class_option :views, :type => :boolean, :default => true
       class_option :routes, :type => :boolean, :default => true
+      class_option :stylesheets, :type => :boolean, :desc => "Generate Stylesheets"
+      class_option :stylesheet_engine, :desc => "Engine for Stylesheets"
+      
+      hook_for :orm
+      
+      # add class method 'search' to model
       
       check_class_collision :suffix => "Controller"
 
@@ -18,16 +26,17 @@ module ExtjsScaffold
         template 'controller.rb', File.join('app/controllers', class_path, "#{controller_file_name}_controller.rb")
       end
 
-      # create js files under public/javascipts/app/controller
+      # create Extjs MVC structure
       def create_js_root_folder
         empty_directory File.join("app/assets/javascripts", "controller")
         empty_directory File.join("app/assets/javascripts", "model")
         empty_directory File.join("app/assets/javascripts", "store")
         empty_directory File.join("app/assets/javascripts", "view")
+        # create Extjs controller view folder
         empty_directory File.join("app/assets/javascripts/view", singular_table_name)
       end
 
-      # copy over js files
+      # copy over controller js files
       def copy_js_files
         available_js.each do |name|
           filename = [name, :js].compact.join(".")
@@ -77,83 +86,93 @@ module ExtjsScaffold
         route_config << " end" * class_path.size
         route route_config
       end
+      
+      # copy view templates or hook to :template_engine
+      
+      hook_for :template_engine
 
       hook_for :test_framework, :as => :ext_scaffold
 
-      # Invoke the helper using the controller name (pluralized)
       hook_for :helper do |invoked|
         invoke invoked, [ controller_name ]
       end
       
-      hook_for :template_engine
+      hook_for :assets do |assets|
+        invoke assets, [controller_name]
+      end
 
+      hook_for :stylesheet_engine do |stylesheet_engine|
+        invoke stylesheet_engine, [controller_name] if options[:stylesheets] && behavior == :invoke
+      end
+      
       protected
-        def available_js
-          %w(Controller Model Store Grid Form EditWindow)
+      
+      def available_js
+        %w(Controller Model Store Grid Form EditWindow)
+      end
+      
+      def reference_store
+        return 'ReferenceStore'
+      end
+      
+      def create_controller_store_list
+        list = []
+        attributes.select {|attr| attr.reference? }.each do |attribute|
+          list << "'#{singular_table_name.capitalize}#{attribute.name.pluralize.capitalize}'"
+        end
+        return list.join(',')
+      end
+      
+      def create_ext_record(attribute)
+        case attribute.type.to_s
+        when 'boolean'
+          return "name: '#{attribute.name}', type: 'bool'"
+        when 'datetime', 'date'
+          return "type: 'date', sortType: 'asDate', name: '#{attribute.name}', dateFormat: 'c'"
+      	end
+      	if attribute.reference?
+          return "name: '#{attribute.name}_name'"
+        else
+          return "name: '#{attribute.name}'"
+        end
+      end
+      
+      def create_ext_column(attribute)
+        case attribute.type.to_s
+        when 'boolean'
+          return "dataIndex: '#{attribute.name}', header: '#{attribute.name.titleize}', width: 80, renderer: App.util.Format.booleanRenderer(), sortable: true"
+        when 'datetime', 'date'
+          return "dataIndex: '#{attribute.name}', header: '#{attribute.name.titleize}', width: 100, renderer: App.util.Format.dateRenderer(), sortable: true"
+        end
+      	if attribute.reference?
+          return "dataIndex: '#{attribute.name}_name', header: '#{attribute.name.titleize}', width: 120, sortable: true"
+        else
+          return "dataIndex: '#{attribute.name}', header: '#{attribute.name.titleize}', width: 120, sortable: true"
+        end
+      end
+      
+      def create_ext_formfield(attribute)
+        case attribute.type.to_s
+        when 'boolean'
+          return "{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', fieldLabel: '#{attribute.name.titleize}?', width: 120, xtype: 'checkbox'}"
+        when 'date'
+          return "{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', fieldLabel: '#{attribute.name.titleize}', width: 120, xtype: 'datefield'}"
+        when 'text'
+          return "{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', fieldLabel: '#{attribute.name.titleize}', width: 350, height: 200, xtype: 'textarea'}"
+        when 'integer'
+          return "{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', fieldLabel: '#{attribute.name.titleize}', width: 120, xtype: 'numberfield'}"
         end
         
-        def reference_store
-          return 'ReferenceStore'
+        if attribute.reference?
+          return "{ id: '#{attribute.name}_name', 
+            fieldLabel: '#{attribute.name.titleize}', 
+            name: '[#{singular_table_name}]#{attribute.name}_id',
+			      store: App.store.#{singular_table_name.capitalize}#{attribute.name.capitalize.pluralize},
+						xtype: 'parentcombo'}"
+				else
+          return "{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', fieldLabel: '#{attribute.name.titleize}', width: 200, xtype: 'textfield'}"
         end
-        
-        def create_controller_store_list
-          list = []
-          attributes.select {|attr| attr.reference? }.each do |attribute|
-            list << "'#{singular_table_name.capitalize}#{attribute.name.pluralize.capitalize}'"
-          end
-          return list.join(',')
-        end
-        
-        def create_ext_record(attribute)
-          case attribute.type.to_s
-          when 'boolean'
-            return "name: '#{attribute.name}', type: 'bool'"
-          when 'datetime', 'date'
-            return "type: 'date', sortType: 'asDate', name: '#{attribute.name}', dateFormat: 'c'"
-        	end
-        	if attribute.reference?
-            return "name: '#{attribute.name}_name'"
-          else
-            return "name: '#{attribute.name}'"
-          end
-        end
-        
-        def create_ext_column(attribute)
-          case attribute.type.to_s
-          when 'boolean'
-            return "dataIndex: '#{attribute.name}', header: '#{attribute.name.titleize}', width: 80, renderer: App.util.Format.booleanRenderer(), sortable: true"
-          when 'datetime', 'date'
-            return "dataIndex: '#{attribute.name}', header: '#{attribute.name.titleize}', width: 100, renderer: App.util.Format.dateRenderer(), sortable: true"
-          end
-        	if attribute.reference?
-            return "dataIndex: '#{attribute.name}_name', header: '#{attribute.name.titleize}', width: 120, sortable: true"
-          else
-            return "dataIndex: '#{attribute.name}', header: '#{attribute.name.titleize}', width: 120, sortable: true"
-          end
-        end
-        
-        def create_ext_formfield(attribute)
-          case attribute.type.to_s
-          when 'boolean'
-            return "{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', fieldLabel: '#{attribute.name.titleize}?', width: 120, xtype: 'checkbox'}"
-          when 'date'
-            return "{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', fieldLabel: '#{attribute.name.titleize}', width: 120, xtype: 'datefield'}"
-          when 'text'
-            return "{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', fieldLabel: '#{attribute.name.titleize}', width: 350, height: 200, xtype: 'textarea'}"
-          when 'integer'
-            return "{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', fieldLabel: '#{attribute.name.titleize}', width: 120, xtype: 'numberfield'}"
-          end
-          
-          if attribute.reference?
-            return "{ id: '#{attribute.name}_name', 
-              fieldLabel: '#{attribute.name.titleize}', 
-              name: '[#{singular_table_name}]#{attribute.name}_id',
-  			      store: App.store.#{singular_table_name.capitalize}#{attribute.name.capitalize.pluralize},
-  						xtype: 'parentcombo'}"
-  				else
-            return "{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', fieldLabel: '#{attribute.name.titleize}', width: 200, xtype: 'textfield'}"
-          end
-        end
+      end
     end
   end
 end

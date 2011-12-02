@@ -1,147 +1,0 @@
-10
-
-dir
-0
-file://localhost/Users/mwinkler/svn/timetrak/lib/generators/jquery/erb/templates
-file://localhost/Users/mwinkler/svn/timetrak
-add
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-05446040-3395-4603-ab07-33180b8bd35b
-
-index.html.erb
-file
-
-
-
-add
-
-_detail_info.html.erb
-file
-
-
-
-add
-
-_record.html.erb
-file
-
-
-
-add
-
-_error_messages.html.erb
-file
-
-
-
-add
-
-show.html.erb
-file
-
-
-
-add
-
-_detail_actions.html.erb
-file
-
-
-
-add
-
-edit.html.erb
-file
-
-
-
-add
-
-show.js.erb
-file
-
-
-
-add
-
-new.html.erb
-file
-
-
-
-add
-
-_record_body.html.erb
-file
-
-
-
-add
-
-_list_actions.html.erb
-file
-
-
-
-add
-
-update.js.erb
-file
-
-
-
-add
-
-edit.js.erb
-file
-
-
-
-add
-
-_record_detail.html.erb
-file
-
-
-
-add
-
-error.js.erb
-file
-
-
-
-add
-
-destroy.js.erb
-file
-
-
-
-add
-
-_form.html.erb
-file
-
-
-
-add
-
