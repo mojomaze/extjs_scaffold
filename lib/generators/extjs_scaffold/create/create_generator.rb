@@ -42,13 +42,13 @@ module ExtjsScaffold
           filename = [name, :js].compact.join(".")
           case name
           when 'Controller'
-            template filename, File.join("app/assets/javascripts/controller", "#{plural_table_name.capitalize}.js")  
+            template "js/#{filename}", File.join("app/assets/javascripts/controller", "#{plural_table_name.capitalize}.js")  
           when 'Model'
-            template filename, File.join("app/assets/javascripts/model", "#{singular_table_name.capitalize}.js")
+            template "js/#{filename}", File.join("app/assets/javascripts/model", "#{singular_table_name.capitalize}.js")
           when 'Store'
-            template filename, File.join("app/assets/javascripts/store", "#{plural_table_name.capitalize}.js")
+            template "js/#{filename}", File.join("app/assets/javascripts/store", "#{plural_table_name.capitalize}.js")
           else
-            template filename, File.join("app/assets/javascripts/view", singular_table_name, filename)
+            template "js/#{filename}", File.join("app/assets/javascripts/view", singular_table_name, filename)
           end
         end
       end
