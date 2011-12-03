@@ -3,20 +3,19 @@ require 'rails/generators/resource_helpers'
 
 module ExtjsScaffold
   module Generators
-    class CreateGenerator < Base
+    class ScaffoldControllerGenerator < Base
       
       include Rails::Generators::ResourceHelpers
       
       argument :attributes, :type => :array, :default => [], :banner => "field:type field:type"
       
+      class_option :file_name, :desc => "Name of file used to hold Ext.application", :aliases => '-n'
+      class_option :app_name, :desc => "Name of app used in Ext.application", :aliases => '-a'
+      
       class_option :orm, :desc => "ORM used to generate the controller"
       class_option :template_engine, :desc => "Template engine to generate view files"
       class_option :views, :type => :boolean, :default => true
       class_option :routes, :type => :boolean, :default => true
-      class_option :stylesheets, :type => :boolean, :desc => "Generate Stylesheets"
-      class_option :stylesheet_engine, :desc => "Engine for Stylesheets"
-      
-      hook_for :orm
       
       # add class method 'search' to model
       
@@ -62,17 +61,17 @@ module ExtjsScaffold
         end
       end
       
-      # def update_application_js
-      #         app_init = "\n"
-      #         app_init << "      // move up to controllers config for true mvc framework \n"
-      #         app_init << "      if (undefined != Ext.get('#{plural_table_name}_main')) { \n"
-      #         app_init << "        var controller = this.getController('#{plural_table_name.capitalize}');\n"
-      #         app_init << "        controller.init();\n"
-      #         app_init << "        Ext.create('App.view.#{singular_table_name}.Grid',{renderTo: Ext.getBody() });\n"
-      #         app_init << "      }\n"
-      #         
-      #         insert_into_file "public/javascripts/app/Application.js", app_init, :after => "launch: function() {"
-      #       end
+      def update_application_js
+        app_init = "\n"
+        app_init << "      // #{plural_table_name.capitalize}: Initialize controller and create list grid \n"
+        app_init << "      if (undefined != Ext.get('#{plural_table_name}_list')) { \n"
+        app_init << "        var controller = this.getController('#{plural_table_name.capitalize}');\n"
+        app_init << "        controller.init();\n"
+        app_init << "        Ext.create('App.view.#{singular_table_name}.Grid',{renderTo: Ext.getBody() });\n"
+        app_init << "      }\n"
+        
+        insert_into_file "app/assets/javascripts/#{app_file_name}", app_init, :after => "launch: function() {"
+      end
       
       def add_resource_route
         return unless options[:routes]
@@ -89,23 +88,43 @@ module ExtjsScaffold
       
       # copy view templates or hook to :template_engine
       
-      hook_for :template_engine
-
-      hook_for :test_framework, :as => :ext_scaffold
-
-      hook_for :helper do |invoked|
-        invoke invoked, [ controller_name ]
+      def copy_view_files
+        return unless options[:views]
+        empty_directory File.join("app/views", controller_file_path)
+        # accept haml or default to erb
+        template = options[:template_engine] == 'haml' ? options[:template_engine] : 'erb'
+        
+        available_views.each do |view|
+          filename = filename_with_extensions(view, :html, template)
+          template "views/#{template}/#{filename}", File.join("app/views", controller_file_path, filename)
+        end
       end
-      
-      hook_for :assets do |assets|
-        invoke assets, [controller_name]
-      end
 
-      hook_for :stylesheet_engine do |stylesheet_engine|
-        invoke stylesheet_engine, [controller_name] if options[:stylesheets] && behavior == :invoke
-      end
+      #hook_for :test_framework, :as => :ext_scaffold
       
       protected
+      
+      def app_file_name
+        file_name = options.file_name || rails_app_name
+        [file_name, :js].compact.join(".")
+      end
+      
+      def app_name
+        options.app_name || rails_app_name
+      end
+      
+      def rails_app_name
+        # get app name and convert to capcase
+        Rails.root.to_s.split('/').last.titlecase.split.join
+      end
+      
+      def available_views
+        %w(index)
+      end
+
+      def filename_with_extensions(name, prefix, suffix)
+        [name, prefix, suffix].compact.join(".")
+      end
       
       def available_js
         %w(Controller Model Store Grid Form EditWindow)
