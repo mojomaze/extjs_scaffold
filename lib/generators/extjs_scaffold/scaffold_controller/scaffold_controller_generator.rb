@@ -18,6 +18,13 @@ module ExtjsScaffold
       class_option :routes, :type => :boolean, :default => true
       
       # add class method 'search' to model
+      def create_model_methods
+        template "model.rb", "app/models/#{controller_file_name}_tmp.rb"
+        f = File.open "#{destination_root}/app/models/#{controller_file_name}_tmp.rb", "r"
+        model_methods = f.read
+        inject_into_class "app/models/#{singular_table_name}.rb", singular_table_name.capitalize, model_methods
+        remove_file "app/models/#{controller_file_name}_tmp.rb"
+      end
       
       check_class_collision :suffix => "Controller"
 
