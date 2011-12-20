@@ -4,3 +4,6 @@ Gemfile.lock
 pkg/*
 .rvmrc
 tmp/*
+resources/*
+.DS_Store
+
