@@ -149,7 +149,7 @@ describe ExtjsScaffold::Generators::ScaffoldGenerator do
   
   it "generates scaffold with reference with user defined field lookup" do
     controller_name = "widget"
-    run_generator %w(widget item:references name:string color:string --orm=active_record --reference_fields item:sku)
+    run_generator %w(widget item:references name:string color:string --orm=active_record --reference-fields item:sku)
   
     destination_root.should have_structure {
       directory "app" do
