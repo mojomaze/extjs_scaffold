@@ -80,7 +80,7 @@ module ExtjsScaffold
         app_init << "      if (undefined != Ext.get('#{plural_table_name}_list')) { \n"
         app_init << "        var controller = this.getController('#{plural_table_name.capitalize}');\n"
         app_init << "        controller.init();\n"
-        app_init << "        Ext.create('App.view.#{singular_table_name}.Grid',{renderTo: Ext.getBody() });\n"
+        app_init << "        Ext.create('#{app_name}.view.#{singular_table_name}.Grid',{renderTo: Ext.getBody() });\n"
         app_init << "      }\n"
         
         insert_into_file "app/assets/javascripts/#{app_file_name}", app_init, :after => "launch: function() {"
@@ -180,9 +180,9 @@ module ExtjsScaffold
       def create_ext_column(attribute)
         case attribute.type.to_s
         when 'boolean'
-          return "dataIndex: '#{attribute.name}', header: '#{attribute.name.titleize}', width: 80, renderer: App.util.Format.booleanRenderer(), sortable: true"
+          return "dataIndex: '#{attribute.name}', header: '#{attribute.name.titleize}', width: 80, renderer: #{app_name}.util.Format.booleanRenderer(), sortable: true"
         when 'datetime', 'date'
-          return "dataIndex: '#{attribute.name}', header: '#{attribute.name.titleize}', width: 100, renderer: App.util.Format.dateRenderer(), sortable: true"
+          return "dataIndex: '#{attribute.name}', header: '#{attribute.name.titleize}', width: 100, renderer: #{app_name}.util.Format.dateRenderer(), sortable: true"
         end
       	if attribute.reference?
           return "dataIndex: '#{attribute.name}_#{reference_field(attribute)}', header: '#{attribute.name.titleize}', width: 120, sortable: true"

@@ -132,6 +132,28 @@ class <%= controller_class_name %>Controller < ApplicationController
   
   private
   
+  def sort_column
+    # set defualt sort column
+    <%  default_sort = ''
+        if attributes.first 
+          default_sort = attributes.first.name 
+          if attributes.first.reference?
+            default_sort += "_#{reference_field(attributes.first)}"
+          end 
+        end
+    -%>
+    sort = ActiveSupport::JSON.decode(params[:sort]) if params[:sort]
+    return sort[0]['property'] if sort && ( <%= class_name %>.column_names.include?(sort[0]['property']) || <%= class_name %>.method_defined?(sort[0]['property']) )
+    return '<%= default_sort %>'
+  end
+  
+  def sort_direction
+    # set default sort direction
+    sort = ActiveSupport::JSON.decode(params[:sort]) if params[:sort]
+    return sort[0]['direction'] if sort && %w[ASC DESC].include?(sort[0]['direction'])
+    return 'ASC'
+  end
+  
   def fix_dates(datestr)
     # change mm-dd-yy to yy-mm-dd to be safe
     datestr =~ %r{(\d+)(/|:)(\d+)(/|:)(\d+)}
