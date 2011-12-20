@@ -18,9 +18,7 @@ describe ExtjsScaffold::Generators::ScaffoldGenerator do
   end
   
   it "generates scaffold using active_record and haml" do
-    
     controller_name = "widget"
-    
     run_generator %w(widget name:string color:string --orm=active_record --template_engine=haml)
   
     destination_root.should have_structure {
@@ -69,7 +67,10 @@ describe ExtjsScaffold::Generators::ScaffoldGenerator do
           file "#{controller_name.pluralize}_controller.rb"
         end
         directory "models" do
-          file "#{controller_name}.rb"
+          file "#{controller_name}.rb" do
+            # default pagination is kaminari
+            contains "page(page).per(size)"
+          end
         end
         directory "views" do
           directory "#{controller_name.pluralize}" do
@@ -82,6 +83,119 @@ describe ExtjsScaffold::Generators::ScaffoldGenerator do
       directory "config" do
         file "routes.rb" do
           contains "resources :widgets do"
+        end
+      end
+    }
+  end
+  
+  it "generates model with will_paginate pagination" do
+    controller_name = "widget"
+    run_generator %w(widget name:string color:string --orm=active_record --pagination=will_paginate)
+  
+    destination_root.should have_structure {
+      directory "app" do
+        directory "models" do
+          file "#{controller_name}.rb" do
+            contains "paginate(:page => page, :per_page => size)"
+          end
+        end
+      end
+    }
+  end
+  
+  it "generates scaffold with reference with default 'name' field lookup" do
+    controller_name = "widget"
+    run_generator %w(widget item:references name:string color:string --orm=active_record)
+  
+    destination_root.should have_structure {
+      directory "app" do
+        directory "assets" do
+          directory "javascripts" do
+            directory "store" do
+              file "WidgetItems.js"
+            end
+            directory "view" do
+              directory "#{controller_name}" do
+                file "Form.js" do
+                  contains "{ id: 'item_name',"
+                  contains "xtype: 'parentcombo'}"
+                end
+              end
+            end
+          end
+        end
+        directory "controllers" do
+          file "#{controller_name.pluralize}_controller.rb" do
+            contains "[:item_name]"
+          end
+        end
+        directory "models" do
+          file "#{controller_name}.rb" do
+            contains "belongs_to :item"
+            contains "def item_name"
+            contains "when 'item_name'"
+          end
+        end
+        directory "views" do
+          directory "#{controller_name.pluralize}" do
+            file "index.html.erb" do
+              contains "#{controller_name.pluralize}_list"
+            end
+          end
+        end
+      end
+    }
+  end
+  
+  it "generates scaffold with reference with user defined field lookup" do
+    controller_name = "widget"
+    run_generator %w(widget item:references name:string color:string --orm=active_record --reference_fields item:sku)
+  
+    destination_root.should have_structure {
+      directory "app" do
+        directory "assets" do
+          directory "javascripts" do
+            directory "controller" do
+              file "#{controller_name.pluralize.capitalize}.js" do
+                contains "var item_sku = action.result.data.item_sku;"
+              end
+            end
+            directory "store" do
+              file "WidgetItems.js" do
+                contains "property: 'sku'"
+              end
+            end
+            directory "view" do
+              directory "#{controller_name}" do
+                file "Grid.js" do
+                  contains "{dataIndex: 'item_sku'"
+                end
+                file "Form.js" do
+                  contains "{ id: 'item_sku',"
+                  contains "xtype: 'parentcombo'}"
+                end
+              end
+            end
+          end
+        end
+        directory "controllers" do
+          file "#{controller_name.pluralize}_controller.rb" do
+            contains "[:item_sku]"
+          end
+        end
+        directory "models" do
+          file "#{controller_name}.rb" do
+            contains "belongs_to :item"
+            contains "def item_sku"
+            contains "when 'item_sku'"
+          end
+        end
+        directory "views" do
+          directory "#{controller_name.pluralize}" do
+            file "index.html.erb" do
+              contains "#{controller_name.pluralize}_list"
+            end
+          end
         end
       end
     }

@@ -16,9 +16,12 @@ module ExtjsScaffold
       class_option :template_engine, :desc => "Template engine to generate view files"
       class_option :views, :type => :boolean, :default => true
       class_option :routes, :type => :boolean, :default => true
+      class_option :pagination, :desc => "Rails pagination gem 'kaminari' or 'will_paginate'", :default => 'kaminari'
+      class_option :reference_fields, :type => :hash, :desc => "Optional collection of fields to use for reference lookup, --reference_fields parent_table:field_name"
       
       # add class method 'search' to model
       def create_model_methods
+        @pagination = options.pagination
         template "model.rb", "app/models/#{controller_file_name}_tmp.rb"
         f = File.open "#{destination_root}/app/models/#{controller_file_name}_tmp.rb", "r"
         model_methods = f.read
@@ -63,8 +66,9 @@ module ExtjsScaffold
       def create_reference_stores
         attributes.select {|attr| attr.reference? }.each do |attribute|
           @reference_attribute = attribute
+          @options = options
           filename = [reference_store, :js].compact.join(".")
-          template filename, File.join("app/assets/javascripts/store", "#{singular_table_name.capitalize}#{attribute.name.capitalize.pluralize}.js")
+          template "js/#{filename}", File.join("app/assets/javascripts/store", "#{singular_table_name.capitalize}#{attribute.name.capitalize.pluralize}.js")
         end
       end
       
@@ -141,6 +145,14 @@ module ExtjsScaffold
         return 'ReferenceStore'
       end
       
+      def reference_field(attribute)
+        if options.reference_fields && options.reference_fields[attribute.name]
+          options.reference_fields[attribute.name]
+        else
+          'name'
+        end
+      end
+      
       def create_controller_store_list
         list = []
         attributes.select {|attr| attr.reference? }.each do |attribute|
@@ -171,7 +183,7 @@ module ExtjsScaffold
           return "dataIndex: '#{attribute.name}', header: '#{attribute.name.titleize}', width: 100, renderer: App.util.Format.dateRenderer(), sortable: true"
         end
       	if attribute.reference?
-          return "dataIndex: '#{attribute.name}_name', header: '#{attribute.name.titleize}', width: 120, sortable: true"
+          return "dataIndex: '#{attribute.name}_#{reference_field(attribute)}', header: '#{attribute.name.titleize}', width: 120, sortable: true"
         else
           return "dataIndex: '#{attribute.name}', header: '#{attribute.name.titleize}', width: 120, sortable: true"
         end
@@ -190,7 +202,7 @@ module ExtjsScaffold
         end
         
         if attribute.reference?
-          return "{ id: '#{attribute.name}_name', 
+          return "{ id: '#{attribute.name}_#{reference_field(attribute)}', 
             fieldLabel: '#{attribute.name.titleize}', 
             name: '[#{singular_table_name}]#{attribute.name}_id',
 			      store: App.store.#{singular_table_name.capitalize}#{attribute.name.capitalize.pluralize},

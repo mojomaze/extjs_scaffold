@@ -12,17 +12,16 @@
 -%>
 <% attributes.select {|attr| attr.reference? }.each do |attribute| -%>
   
-  def <%= attribute.name %>_name
-    <%= attribute.name %>.name if <%= attribute.name %>
+  def <%= attribute.name %>_<%= reference_field(attribute) %>
+    <%= attribute.name %>.<%= reference_field(attribute) %> if <%= attribute.name %>
   end
-  <% virtual_fields["#{attribute.name}_name"] = "#{attribute.name.pluralize}.name" -%>
+  <% virtual_fields["#{attribute.name}_#{reference_field(attribute)}"] = "#{attribute.name.pluralize}.#{reference_field(attribute)}" -%>
   <% join_tables << ":#{attribute.name}" -%>
 <% end -%>
-
   # search or return all
   def self.search(query, page, size, sort_column, sort_direction)
   <% if virtual_fields.count > 0 -%>
-  # handle sort columns - prepend table name and change reference attrbiutes from 'reftable_name'
+  # handle sort columns - prepend table name and add reference attributes
     case sort_column
   <% virtual_fields.each do |key, value| -%>
     when '<%= key %>'
@@ -32,17 +31,20 @@
       sort_column = "<%= plural_table_name %>.#{sort_column}"
     end
   <% end -%>
-    if query
+  <%
+    pagination_string = @pagination == "will_paginate" ? "paginate(:page => page, :per_page => size)" : "page(page).per(size)"
+  -%>
+if query
       search = "%#{query}%"
     <% if virtual_fields.count > 0 -%>
-      return order(sort_column+" "+sort_direction).joins([<%= join_tables.join(',') %>]).where("<%= query.join(' OR ') %>", <%= params.join(',') %>).paginate(:page => page, :per_page => size)
+  return order(sort_column+" "+sort_direction).joins([<%= join_tables.join(',') %>]).where("<%= query.join(' OR ') %>", <%= params.join(',') %>).<%= pagination_string %>
     <% else -%>
-      return order(sort_column+" "+sort_direction).where("<%= query.join(' OR ') %>", <%= params.join(',') %>).paginate(:page => page, :per_page => size)
+  return order(sort_column+" "+sort_direction).where("<%= query.join(' OR ') %>", <%= params.join(',') %>).<%= pagination_string %>
     <% end -%>
-    end
+end
   <% if virtual_fields.count > 0 -%>
-    order(sort_column+" "+sort_direction).joins([<%= join_tables.join(',') %>]).paginate(:page => page, :per_page => size)
+  order(sort_column+" "+sort_direction).joins([<%= join_tables.join(',') %>]).<%= pagination_string %>
   <% else -%>
-    order(sort_column+" "+sort_direction).paginate(:page => page, :per_page => size)
+  order(sort_column+" "+sort_direction).page(page).<%= pagination_string %>
   <% end -%>
-  end
+end

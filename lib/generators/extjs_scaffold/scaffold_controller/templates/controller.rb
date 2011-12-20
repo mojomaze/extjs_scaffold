@@ -155,7 +155,7 @@ class <%= controller_class_name %>Controller < ApplicationController
   <%
     related_attr = []
     attributes.select {|attr| attr.reference? }.each do |attribute|
-      related_attr << ":#{attribute.name}_name"
+      related_attr << ":#{attribute.name}_#{reference_field(attribute)}"
     end 
   %>
   
