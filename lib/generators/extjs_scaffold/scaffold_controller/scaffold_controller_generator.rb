@@ -22,11 +22,13 @@ module ExtjsScaffold
       # add class method 'search' to model
       def create_model_methods
         @pagination = options.pagination
-        template "model.rb", "app/models/#{controller_file_name}_tmp.rb"
-        f = File.open "#{destination_root}/app/models/#{controller_file_name}_tmp.rb", "r"
-        model_methods = f.read
-        inject_into_class "app/models/#{singular_table_name}.rb", singular_table_name.capitalize, model_methods
-        remove_file "app/models/#{controller_file_name}_tmp.rb"
+        if File.exists?("#{destination_root}/app/models/#{singular_table_name}.rb")
+          template "model.rb", "app/models/#{controller_file_name}_tmp.rb"
+          f = File.open "#{destination_root}/app/models/#{controller_file_name}_tmp.rb", "r"
+          model_methods = f.read
+          inject_into_class "app/models/#{singular_table_name}.rb", singular_table_name.capitalize, model_methods
+          remove_file "app/models/#{controller_file_name}_tmp.rb"
+        end
       end
       
       check_class_collision :suffix => "Controller"

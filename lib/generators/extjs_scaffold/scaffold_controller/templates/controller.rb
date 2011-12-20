@@ -7,7 +7,7 @@ class <%= controller_class_name %>Controller < ApplicationController
     params[:limit] ||= 40
     @<%= plural_table_name %> = <%= class_name %>.search(params[:query], params[:page], params[:limit], sort_column, sort_direction)
     respond_with @<%= plural_table_name %> do |format|
-      format.json { render :json => :extjs, :methods => related_attributes }
+      format.json { render :extjs => @<%= plural_table_name %>, :methods => related_attributes }
     end
   end
   
@@ -16,7 +16,7 @@ class <%= controller_class_name %>Controller < ApplicationController
   def show
     @<%= singular_table_name %> = <%= orm_class.find(class_name, "params[:id]") %>
     respond_with @<%= singular_table_name %> do |format|
-      format.json { render :json => :extjs, :methods => related_attributes }
+      format.json { render :extjs => @<%= singular_table_name %>, :methods => related_attributes }
     end
   end
 
@@ -30,7 +30,7 @@ class <%= controller_class_name %>Controller < ApplicationController
   def edit
     @<%= singular_table_name %> = <%= orm_class.find(class_name, "params[:id]") %>
     respond_with @<%= singular_table_name %> do |format|
-      format.json { render :json => :extjs, :methods => related_attributes }
+      format.json { render :extjs => @<%= singular_table_name %>, :methods => related_attributes }
     end
   end
   
@@ -43,7 +43,7 @@ class <%= controller_class_name %>Controller < ApplicationController
       if @<%= singular_table_name %>.invalid?
         format.json { render :json => { :success => false, :error_count => @<%= singular_table_name %>.errors.count, :errors => @<%= singular_table_name %>.errors }.to_json, :layout => false }
       else
-        format.json { render :json => :extjs, :methods => related_attributes }
+        format.json { render :extjs => @<%= singular_table_name %>, :methods => related_attributes }
       end
     end
   end
@@ -56,7 +56,7 @@ class <%= controller_class_name %>Controller < ApplicationController
       if @<%= singular_table_name %>.invalid?
         format.json { render :json => { :success => false, :error_count => @<%= singular_table_name %>.errors.count, :errors => @<%= singular_table_name %>.errors }.to_json, :layout => false }
       else
-        format.json { render :json => :extjs, :methods => related_attributes }
+        format.json { render render :extjs => @<%= singular_table_name %>, :methods => related_attributes }
       end
     end
   end
