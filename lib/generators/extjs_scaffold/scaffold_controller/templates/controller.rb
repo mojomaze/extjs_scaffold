@@ -56,7 +56,7 @@ class <%= controller_class_name %>Controller < ApplicationController
       if @<%= singular_table_name %>.invalid?
         format.json { render :json => { :success => false, :error_count => @<%= singular_table_name %>.errors.count, :errors => @<%= singular_table_name %>.errors }.to_json, :layout => false }
       else
-        format.json { render render :extjs => @<%= singular_table_name %>, :methods => related_attributes }
+        format.json { render :extjs => @<%= singular_table_name %>, :methods => related_attributes }
       end
     end
   end
@@ -131,7 +131,7 @@ class <%= controller_class_name %>Controller < ApplicationController
   end
   
   private
-  
+  # set passed sort property or default to first attribute
   def sort_column
     # set defualt sort column
     <%  default_sort = ''
@@ -147,6 +147,7 @@ class <%= controller_class_name %>Controller < ApplicationController
     return '<%= default_sort %>'
   end
   
+  # set passed sort direction or default to ASC
   def sort_direction
     # set default sort direction
     sort = ActiveSupport::JSON.decode(params[:sort]) if params[:sort]
@@ -181,6 +182,7 @@ class <%= controller_class_name %>Controller < ApplicationController
     end 
   %>
   
+  # related attributes sent via json
   def related_attributes
     [<%= related_attr.join(",") %>]
   end

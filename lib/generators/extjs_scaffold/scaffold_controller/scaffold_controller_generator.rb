@@ -196,11 +196,11 @@ module ExtjsScaffold
         when 'boolean'
           return "{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', fieldLabel: '#{attribute.name.titleize}?', width: 120, xtype: 'checkbox'}"
         when 'date'
-          return "{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', fieldLabel: '#{attribute.name.titleize}', width: 120, xtype: 'datefield'}"
+          return "{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', fieldLabel: '#{attribute.name.titleize}', width: 250, xtype: 'datefield'}"
         when 'text'
-          return "{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', fieldLabel: '#{attribute.name.titleize}', width: 350, height: 200, xtype: 'textarea'}"
+          return "{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', fieldLabel: '#{attribute.name.titleize}', width: 500, height: 200, xtype: 'textarea'}"
         when 'integer'
-          return "{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', fieldLabel: '#{attribute.name.titleize}', width: 120, xtype: 'numberfield'}"
+          return "{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', fieldLabel: '#{attribute.name.titleize}', width: 250, xtype: 'numberfield'}"
         end
         
         if attribute.reference?
@@ -210,7 +210,7 @@ module ExtjsScaffold
 			      store: App.store.#{singular_table_name.capitalize}#{attribute.name.capitalize.pluralize},
 						xtype: 'parentcombo'}"
 				else
-          return "{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', fieldLabel: '#{attribute.name.titleize}', width: 200, xtype: 'textfield'}"
+          return "{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', fieldLabel: '#{attribute.name.titleize}', width: 500, xtype: 'textfield'}"
         end
       end
     end
