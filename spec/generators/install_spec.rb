@@ -23,11 +23,6 @@ describe ExtjsScaffold::Generators::InstallGenerator do
             file "#{app_name}.js" do
               contains "name: '#{app_name}',"
             end
-            directory "model" do
-              file "ParentCombo.js" do
-                contains "Ext.define('#{app_name}.model.ParentCombo', {"
-              end
-            end
             directory "util" do
               file "Format.js" do
                 contains "Ext.ns('#{app_name}.util');"

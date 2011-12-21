@@ -155,21 +155,20 @@ class <%= controller_class_name %>Controller < ApplicationController
     return 'ASC'
   end
   
-  def fix_dates(datestr)
-    # change mm-dd-yy to yy-mm-dd to be safe
+  def filter_dates(datestr)
+    # change mm-dd-yyyy to yyyy-mm-dd
     datestr =~ %r{(\d+)(/|:)(\d+)(/|:)(\d+)}
     return "#{$5}-#{$1}-#{$3}"
   end
   
   def filter_params(<%= singular_table_name %>)
-    # TODO: determine if fix_dates is still necessary
-    # filter booleans and fix dateparse for ruby 1.9.2p0
+    # filter booleans and dates
     <% attributes.each do |attribute|
       case attribute.type.to_s
       when 'boolean' -%>
     <%= singular_table_name %>[:<%= attribute.name %>] = <%= singular_table_name %>[:<%= attribute.name %>] ? 'true' : 'false'
       <% when 'date' -%>
-        <%= singular_table_name -%>[:<%= attribute.name %>] = fix_dates(<%= singular_table_name %>[:<%= attribute.name %>])
+        <%= singular_table_name -%>[:<%= attribute.name %>] = filter_dates(<%= singular_table_name %>[:<%= attribute.name %>])
       <% end -%>
     <% end -%>
     return <%= singular_table_name %>

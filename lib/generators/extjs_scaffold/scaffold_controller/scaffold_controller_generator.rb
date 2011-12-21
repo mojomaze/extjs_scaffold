@@ -68,7 +68,6 @@ module ExtjsScaffold
       def create_reference_stores
         attributes.select {|attr| attr.reference? }.each do |attribute|
           @reference_attribute = attribute
-          @options = options
           filename = [reference_store, :js].compact.join(".")
           template "js/#{filename}", File.join("app/assets/javascripts/store", "#{singular_table_name.capitalize}#{attribute.name.capitalize.pluralize}.js")
         end
@@ -147,12 +146,24 @@ module ExtjsScaffold
         return 'ReferenceStore'
       end
       
+      def reference_model
+        return 'ReferenceModel'
+      end
+      
       def reference_field(attribute)
         if options.reference_fields && options.reference_fields[attribute.name]
           options.reference_fields[attribute.name]
         else
           'name'
         end
+      end
+      
+      def create_controller_model_list
+        list = []
+        attributes.select {|attr| attr.reference? }.each do |attribute|
+          list << "'#{attribute.name.capitalize}'"
+        end
+        return list.join(',')
       end
       
       def create_controller_store_list
@@ -171,7 +182,7 @@ module ExtjsScaffold
           return "type: 'date', sortType: 'asDate', name: '#{attribute.name}', dateFormat: 'c'"
       	end
       	if attribute.reference?
-          return "name: '#{attribute.name}_name'"
+          return "name: '#{attribute.name}_#{reference_field(attribute)}'"
         else
           return "name: '#{attribute.name}'"
         end
@@ -207,9 +218,11 @@ module ExtjsScaffold
           return "{ id: '#{attribute.name}_#{reference_field(attribute)}', 
             fieldLabel: '#{attribute.name.titleize}', 
             name: '[#{singular_table_name}]#{attribute.name}_id',
-			      store: App.store.#{singular_table_name.capitalize}#{attribute.name.capitalize.pluralize},
-						xtype: 'parentcombo'}"
-				else
+            store: #{app_name}.store.#{singular_table_name.capitalize}#{attribute.name.capitalize.pluralize},
+            displayField:'#{reference_field(attribute)}',
+            emptyText: 'type at least 2 characters from #{reference_field(attribute)}',
+            xtype: 'parentcombo'}"
+        else
           return "{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', fieldLabel: '#{attribute.name.titleize}', width: 500, xtype: 'textfield'}"
         end
       end

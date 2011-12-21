@@ -14,11 +14,6 @@ module ExtjsScaffold
         template 'App.js', File.join('app/assets/javascripts/', app_file_name)
       end
       
-      def create_model_file
-        empty_directory File.join("app/assets/javascripts", "model")
-        template 'ParentComboModel.js', File.join('app/assets/javascripts/model/', 'ParentCombo.js')
-      end
-      
       def create_util_file
         empty_directory File.join("app/assets/javascripts", "util")
         template 'Format.js', File.join('app/assets/javascripts/util/', 'Format.js')
