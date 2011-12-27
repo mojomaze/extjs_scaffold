@@ -9,6 +9,12 @@ module ExtjsScaffold
         @source_root ||= File.expand_path(File.join(File.dirname(__FILE__), 'templates'))
       end
       
+      def css_and_images
+        copy_file 'extjs_scaffold.css.scss', 'app/assets/stylesheets/extjs_scaffold.css.scss'
+        directory 'images', 'app/assets/images/extjs_scaffold'
+        copy_file 'images/tick.png', 'public/images/extjs_scaffold/tick.png'
+      end
+      
       def create_application_file
         empty_directory File.join("app/assets", "javascripts")
         template 'App.js', File.join('app/assets/javascripts/', app_file_name)

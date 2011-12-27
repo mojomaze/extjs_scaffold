@@ -17,8 +17,26 @@ describe ExtjsScaffold::Generators::InstallGenerator do
       app_name = Rails.root.to_s.split('/').last.titlecase.split.join
       
       no_file "non_existant.rb"
+      directory "public" do
+        directory "images" do
+          directory "extjs_scaffold" do
+            file "tick.png"
+          end
+        end
+      end
       directory "app" do
         directory "assets" do
+          directory "images" do
+            directory "extjs_scaffold" do
+              file "add.gif"
+              file "application_form_edit.png"
+              file "delete.gif"
+              file "tick.png"
+            end
+          end
+          directory "stylesheets" do
+            file "extjs_scaffold.css.scss"
+          end
           directory "javascripts" do
             file "#{app_name}.js" do
               contains "name: '#{app_name}',"
