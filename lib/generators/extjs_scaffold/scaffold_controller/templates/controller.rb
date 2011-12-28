@@ -108,7 +108,7 @@ class <%= controller_class_name %>Controller < ApplicationController
       begin
         params[:<%= singular_table_name %>].each do |<%= singular_table_name %>|
           @<%= singular_table_name %> = <%= orm_class.find(class_name, "#{singular_table_name}[:id]") %>
-          if !@<%= orm_instance.update_attributes("params[#{singular_table_name}]") %>
+          if !@<%= orm_instance.update_attributes("#{singular_table_name}") %>
             @<%= singular_table_name %>.errors.each_full do |error|
               @errors << "<div><b>#{@<%= singular_table_name %>.id}</b>: #{ error }</div>"
             end

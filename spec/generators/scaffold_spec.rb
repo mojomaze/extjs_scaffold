@@ -49,8 +49,14 @@ describe ExtjsScaffold::Generators::ScaffoldGenerator do
                 file "EditWindow.js" do
                   contains "Ext.define('#{app_name}.view.#{controller_name}.EditWindow', {"
                 end
-                file "Form.js" do
-                  contains "Ext.define('#{app_name}.view.#{controller_name}.Form', {"
+                file "EditForm.js" do
+                  contains "Ext.define('#{app_name}.view.#{controller_name}.EditForm', {"
+                end
+                file "UpdateWindow.js" do
+                  contains "Ext.define('#{app_name}.view.#{controller_name}.UpdateWindow', {"
+                end
+                file "UpdateForm.js" do
+                  contains "Ext.define('#{app_name}.view.#{controller_name}.UpdateForm', {"
                 end
                 file "Grid.js" do
                   contains "Ext.define('#{app_name}.view.#{controller_name}.Grid', {"
@@ -75,6 +81,7 @@ describe ExtjsScaffold::Generators::ScaffoldGenerator do
         directory "views" do
           directory "#{controller_name.pluralize}" do
             file "index.html.haml" do
+              contains "shared/ext_auth"
               contains "#{controller_name.pluralize}_list"
             end
           end
@@ -116,7 +123,7 @@ describe ExtjsScaffold::Generators::ScaffoldGenerator do
             end
             directory "view" do
               directory "#{controller_name}" do
-                file "Form.js" do
+                file "EditForm.js" do
                   contains "{ id: 'item_name',"
                   contains "xtype: 'parentcombo'}"
                 end
@@ -139,6 +146,7 @@ describe ExtjsScaffold::Generators::ScaffoldGenerator do
         directory "views" do
           directory "#{controller_name.pluralize}" do
             file "index.html.erb" do
+              contains "shared/ext_auth"
               contains "#{controller_name.pluralize}_list"
             end
           end
@@ -170,7 +178,7 @@ describe ExtjsScaffold::Generators::ScaffoldGenerator do
                 file "Grid.js" do
                   contains "{dataIndex: 'item_sku'"
                 end
-                file "Form.js" do
+                file "EditForm.js" do
                   contains "{ id: 'item_sku',"
                   contains "xtype: 'parentcombo'}"
                 end
@@ -193,6 +201,7 @@ describe ExtjsScaffold::Generators::ScaffoldGenerator do
         directory "views" do
           directory "#{controller_name.pluralize}" do
             file "index.html.erb" do
+              contains "shared/ext_auth"
               contains "#{controller_name.pluralize}_list"
             end
           end

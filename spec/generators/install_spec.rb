@@ -25,6 +25,11 @@ describe ExtjsScaffold::Generators::InstallGenerator do
         end
       end
       directory "app" do
+        directory "views" do
+          directory "shared" do
+            file "_ext_auth.html.erb"
+          end
+        end
         directory "assets" do
           directory "images" do
             directory "extjs_scaffold" do
@@ -86,6 +91,9 @@ describe ExtjsScaffold::Generators::InstallGenerator do
               directory "window" do
                 file "EditWindow.js" do
                   contains "Ext.define('#{app_name}.ux.window.EditWindow', {"
+                end
+                file "UpdateWindow.js" do
+                  contains "Ext.define('#{app_name}.ux.window.UpdateWindow', {"
                 end
               end
             end

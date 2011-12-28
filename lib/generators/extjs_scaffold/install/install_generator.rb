@@ -15,6 +15,10 @@ module ExtjsScaffold
         copy_file 'images/tick.png', 'public/images/extjs_scaffold/tick.png'
       end
       
+      def ext_auth_partial
+        copy_file 'ext_auth.html.erb', 'app/views/shared/_ext_auth.html.erb'
+      end
+      
       def create_application_file
         empty_directory File.join("app/assets", "javascripts")
         template 'App.js', File.join('app/assets/javascripts/', app_file_name)
@@ -54,6 +58,7 @@ module ExtjsScaffold
         #window
         empty_directory File.join("app/assets/javascripts/ux", "window")
         template 'EditWindow.js', File.join('app/assets/javascripts/ux/window/', 'EditWindow.js')
+        template 'UpdateWindow.js', File.join('app/assets/javascripts/ux/window/', 'UpdateWindow.js')
         
       end
      

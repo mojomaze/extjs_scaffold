@@ -139,7 +139,7 @@ module ExtjsScaffold
       end
       
       def available_js
-        %w(Controller Model Store Grid Form EditWindow)
+        %w(Controller Model Store Grid EditForm EditWindow UpdateForm UpdateWindow)
       end
       
       def reference_store
@@ -225,6 +225,54 @@ module ExtjsScaffold
         else
           return "{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', fieldLabel: '#{attribute.name.titleize}', width: 500, xtype: 'textfield'}"
         end
+      end
+      
+      def create_ext_updateformfield(attribute)
+        # build field container with disable checkbox
+        field = "{ xtype: 'fieldcontainer', fieldLabel: '#{field_label(attribute)}', layout: 'hbox', width: #{updatefield_width(attribute)}, combineErrors: true,
+						items:[
+							{ xtype: 'displayfield', hideLabel: true, value: 'Enable'}
+							,{ xtype: 'checkboxfield', width: 20, hideLabel: true, style: 'margin-left: 5px'}
+							"
+        if attribute.reference?
+          field += ",{ id: '#{attribute.name}_#{reference_field(attribute)}', 
+            hideLabel: true, 
+            name: '[#{singular_table_name}]#{attribute.name}_id',
+            store: #{app_name}.store.#{singular_table_name.capitalize}#{attribute.name.capitalize.pluralize},
+            displayField:'#{reference_field(attribute)}',
+            emptyText: 'type at least 2 characters from #{reference_field(attribute)}',
+            flex: 1,
+            disabled: true,
+            xtype: 'parentcombo'}"
+        else
+          case attribute.type.to_s
+          when 'boolean'
+            field += ",{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', hideLabel: true, width: 120, flex: 1, disabled: true, xtype: 'checkbox'}"
+          when 'date'
+            field += ",{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', hideLabel: true, width: 250, flex: 1, disabled: true, xtype: 'datefield'}"
+          when 'text'
+            field += ",{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', hideLabel: true, width: 500, height: 200, flex: 1, disabled: true, xtype: 'textarea'}"
+          when 'integer'
+            field += ",{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', hideLabel: true, width: 250, flex: 1, disabled: true, xtype: 'numberfield'}"
+          else
+            field += ",{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', hideLabel: true, width: 500, flex: 1, disabled: true, xtype: 'textfield'}"
+          end
+        end
+        
+        field += "
+			      ]
+	      }
+  
+        "    
+        return field
+      end
+      
+      def field_label(attribute)
+        return attribute.type.to_s == 'boolean' ? "#{attribute.name.titleize}?" : attribute.name.titleize    
+      end
+      
+      def updatefield_width(attribute) 
+        return %w(boolean date integer).include?(attribute.type.to_s) ? 275 : 575
       end
     end
   end
