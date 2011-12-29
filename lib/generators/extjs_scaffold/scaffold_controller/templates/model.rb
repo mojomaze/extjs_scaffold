@@ -15,6 +15,10 @@
   def <%= attribute.name %>_<%= reference_field(attribute) %>
     <%= attribute.name %>.<%= reference_field(attribute) %> if <%= attribute.name %>
   end
+  
+  def <%= attribute.name %>_<%= reference_field(attribute) %>=(<%= reference_field(attribute) %>)
+    # empty setter for update_all
+  end
   <% virtual_fields["#{attribute.name}_#{reference_field(attribute)}"] = "#{attribute.name.pluralize}.#{reference_field(attribute)}" -%>
   <% join_tables << ":#{attribute.name}" -%>
 <% end -%>

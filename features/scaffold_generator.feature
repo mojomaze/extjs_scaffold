@@ -59,12 +59,12 @@ Feature: Generating things
 		And I run `rails g extjs_scaffold:install`
 		Then the following files should exist:
 			| app/assets/javascripts/TestApp.js |
-		And I run `rails g extjs_scaffold:scaffold widget name:string sku:string in_stock:boolean last_received_on:date --template_engine=haml`
+		And I run `rails g extjs_scaffold:scaffold widget name:string sku:string in_stock:boolean price:decimal last_received_on:date --template_engine=haml`
 		Then the following files should exist:
 			| app/assets/javascripts/controller/Widgets.js |
 			| app/controllers/widgets_controller.rb |
 			| app/models/widget.rb |
-		And I run `rails g extjs_scaffold:scaffold part widget:references name:string --template_engine=haml --reference-fields widget:sku`
+		And I run `rails g extjs_scaffold:scaffold part widget:references name:string quantity:integer --template_engine=haml --reference-fields widget:sku`
 			Then the following files should exist:
 				| app/assets/javascripts/controller/Parts.js |
 				| app/controllers/parts_controller.rb |

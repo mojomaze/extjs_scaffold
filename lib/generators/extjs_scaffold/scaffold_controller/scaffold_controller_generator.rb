@@ -175,45 +175,36 @@ module ExtjsScaffold
       end
       
       def create_ext_record(attribute)
-        case attribute.type.to_s
-        when 'boolean'
-          return "name: '#{attribute.name}', type: 'bool'"
-        when 'datetime', 'date'
-          return "type: 'date', sortType: 'asDate', name: '#{attribute.name}', dateFormat: 'c'"
-      	end
-      	if attribute.reference?
+        if attribute.reference?
           return "name: '#{attribute.name}_#{reference_field(attribute)}'"
         else
-          return "name: '#{attribute.name}'"
+          case attribute.type.to_s
+          when 'boolean'
+            return "name: '#{attribute.name}', type: 'bool'"
+          when 'datetime', 'date'
+            return "type: 'date', sortType: 'asDate', name: '#{attribute.name}', dateFormat: 'c'"
+        	else
+        	  return "name: '#{attribute.name}'"
+        	end
         end
       end
       
       def create_ext_column(attribute)
-        case attribute.type.to_s
-        when 'boolean'
-          return "dataIndex: '#{attribute.name}', header: '#{attribute.name.titleize}', width: 80, renderer: #{app_name}.util.Format.booleanRenderer(), sortable: true"
-        when 'datetime', 'date'
-          return "dataIndex: '#{attribute.name}', header: '#{attribute.name.titleize}', width: 100, renderer: #{app_name}.util.Format.dateRenderer(), sortable: true"
-        end
-      	if attribute.reference?
+        if attribute.reference?
           return "dataIndex: '#{attribute.name}_#{reference_field(attribute)}', header: '#{attribute.name.titleize}', width: 120, sortable: true"
-        else
-          return "dataIndex: '#{attribute.name}', header: '#{attribute.name.titleize}', width: 120, sortable: true"
+        else  
+          case attribute.type.to_s
+          when 'boolean'
+            return "dataIndex: '#{attribute.name}', header: '#{attribute.name.titleize}', width: 80, renderer: #{app_name}.util.Format.booleanRenderer(), sortable: true"
+          when 'datetime', 'date'
+            return "dataIndex: '#{attribute.name}', header: '#{attribute.name.titleize}', width: 100, renderer: #{app_name}.util.Format.dateRenderer(), sortable: true"
+          else
+           return "dataIndex: '#{attribute.name}', header: '#{attribute.name.titleize}', width: 120, sortable: true"
+          end
         end
       end
       
       def create_ext_formfield(attribute)
-        case attribute.type.to_s
-        when 'boolean'
-          return "{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', fieldLabel: '#{attribute.name.titleize}?', width: 120, xtype: 'checkbox'}"
-        when 'date'
-          return "{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', fieldLabel: '#{attribute.name.titleize}', width: 250, xtype: 'datefield'}"
-        when 'text'
-          return "{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', fieldLabel: '#{attribute.name.titleize}', width: 500, height: 200, xtype: 'textarea'}"
-        when 'integer'
-          return "{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', fieldLabel: '#{attribute.name.titleize}', width: 250, xtype: 'numberfield'}"
-        end
-        
         if attribute.reference?
           return "{ id: '#{attribute.name}_#{reference_field(attribute)}', 
             fieldLabel: '#{attribute.name.titleize}', 
@@ -223,7 +214,20 @@ module ExtjsScaffold
             emptyText: 'type at least 2 characters from #{reference_field(attribute)}',
             xtype: 'parentcombo'}"
         else
-          return "{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', fieldLabel: '#{attribute.name.titleize}', width: 500, xtype: 'textfield'}"
+          case attribute.type.to_s
+          when 'boolean'
+            return "{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', fieldLabel: '#{attribute.name.titleize}?', width: 120, xtype: 'checkbox'}"
+          when 'date'
+            return "{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', fieldLabel: '#{attribute.name.titleize}', width: 250, xtype: 'datefield'}"
+          when 'text'
+            return "{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', fieldLabel: '#{attribute.name.titleize}', width: 500, height: 200, xtype: 'textarea'}"
+          when 'integer'
+            return "{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', fieldLabel: '#{attribute.name.titleize}', width: 250, xtype: 'numberfield', allowDecimals: false}"
+          when 'decimal'
+            return "{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', fieldLabel: '#{attribute.name.titleize}', width: 250, xtype: 'numberfield', allowDecimals: true}"
+          else
+            return "{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', fieldLabel: '#{attribute.name.titleize}', width: 500, xtype: 'textfield'}"
+          end
         end
       end
       
@@ -253,7 +257,9 @@ module ExtjsScaffold
           when 'text'
             field += ",{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', hideLabel: true, width: 500, height: 200, flex: 1, disabled: true, xtype: 'textarea'}"
           when 'integer'
-            field += ",{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', hideLabel: true, width: 250, flex: 1, disabled: true, xtype: 'numberfield'}"
+            field += ",{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', hideLabel: true, width: 250, flex: 1, disabled: true, xtype: 'numberfield', allowDecimals: false}"
+          when 'decimal'
+            field += ",{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', hideLabel: true, width: 250, flex: 1, disabled: true, xtype: 'numberfield', allowDecimals: true}"
           else
             field += ",{id: '#{attribute.name}', name: '[#{singular_table_name}]#{attribute.name}', hideLabel: true, width: 500, flex: 1, disabled: true, xtype: 'textfield'}"
           end
