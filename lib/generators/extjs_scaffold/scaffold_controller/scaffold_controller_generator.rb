@@ -112,7 +112,7 @@ module ExtjsScaffold
         end
       end
 
-      #hook_for :test_framework, :as => :ext_scaffold
+      hook_for :test_framework, :as => :scaffold
       
       protected
       

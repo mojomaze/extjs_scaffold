@@ -37,6 +37,7 @@ describe ExtjsScaffold::Generators::InstallGenerator do
               file "application_form_edit.png"
               file "delete.gif"
               file "tick.png"
+              file "README.txt"
             end
           end
           directory "stylesheets" do

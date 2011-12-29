@@ -16,6 +16,8 @@ Feature: Generating things
 			gem "kaminari"
 			gem "extjs_renderer", "~> 0.1.0"
 			gem 'extjs_scaffold', :path => '../../../'
+			gem "rspec", "~> 2.7.0"
+		  gem "rspec-rails", "~> 2.7.0"
 			"""
 		And I overwrite "app/views/layouts/application.html.erb" with:
 			"""
@@ -59,7 +61,7 @@ Feature: Generating things
 		And I run `rails g extjs_scaffold:install`
 		Then the following files should exist:
 			| app/assets/javascripts/TestApp.js |
-		And I run `rails g extjs_scaffold:scaffold widget name:string sku:string in_stock:boolean price:decimal last_received_on:date --template_engine=haml`
+		And I run `rails g extjs_scaffold:scaffold widget name:string sku:string in_stock:boolean price:decimal last_received_on:date`
 		Then the following files should exist:
 			| app/assets/javascripts/controller/Widgets.js |
 			| app/controllers/widgets_controller.rb |

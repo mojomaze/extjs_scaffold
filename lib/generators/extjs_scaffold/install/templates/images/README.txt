@@ -1,0 +1,1 @@
+The icons in this folder are from http://www.famfamfam.com/lab/icons/silk/
