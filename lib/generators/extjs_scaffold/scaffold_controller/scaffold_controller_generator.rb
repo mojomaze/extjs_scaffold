@@ -9,15 +9,19 @@ module ExtjsScaffold
       
       argument :attributes, :type => :array, :default => [], :banner => "field:type field:type"
       
-      class_option :file_name, :desc => "Name of file used to hold Ext.application", :aliases => '-n'
-      class_option :app_name, :desc => "Name of app used in Ext.application", :aliases => '-a'
+      class_option :file_name, :desc => "Name of file used to hold Ext.application", 
+              :aliases => '-n', :default =>ExtjsScaffold::Generators::Base.rails_app_name
+      class_option :app_name, :desc => "Name of app used in Ext.application", 
+              :aliases => '-a', :default => ExtjsScaffold::Generators::Base.rails_app_name
       
       class_option :orm, :desc => "ORM used to generate the controller"
       class_option :template_engine, :desc => "Template engine to generate view files"
       class_option :views, :type => :boolean, :default => true
       class_option :routes, :type => :boolean, :default => true
       class_option :pagination, :desc => "Rails pagination gem 'kaminari' or 'will_paginate'", :default => 'kaminari'
-      class_option :reference_fields, :type => :hash, :desc => "Optional collection of fields to use for reference lookup, --reference_fields parent_table:field_name"
+      class_option :reference_fields, :type => :hash, :desc => "Collection of fields to use for one table lookup: --reference_fields parent_table:field_name
+                                           # Default: parent_table:name"
+      class_option :test_framework, :desc => "Test framework to be invoked"
       
       # add class method 'search' to model
       def create_model_methods
@@ -26,7 +30,13 @@ module ExtjsScaffold
           template "model.rb", "app/models/#{controller_file_name}_tmp.rb"
           f = File.open "#{destination_root}/app/models/#{controller_file_name}_tmp.rb", "r"
           model_methods = f.read
-          inject_into_class "app/models/#{singular_table_name}.rb", singular_table_name.capitalize, model_methods
+          # insert after belongs_to or inject
+          refs = attributes.select{|attr| attr.reference? }.collect{|a| a.name}
+          if refs.size > 0
+            insert_into_file "app/models/#{singular_table_name}.rb", model_methods, :after => "belongs_to :#{refs.last}"
+          else
+            inject_into_class "app/models/#{singular_table_name}.rb", singular_table_name.capitalize, model_methods
+          end
           remove_file "app/models/#{controller_file_name}_tmp.rb"
         end
       end
@@ -112,22 +122,22 @@ module ExtjsScaffold
         end
       end
 
-      hook_for :test_framework, :as => :scaffold
+      def copy_test_files
+        case options[:test_framework]
+        when 'rspec'
+          template "tests/controller_spec.rb", File.join("spec/controllers", "#{controller_file_name}_controller_spec.rb")
+        when 'test_unit'
+        end
+      end
       
       protected
       
       def app_file_name
-        file_name = options.file_name || rails_app_name
-        [file_name, :js].compact.join(".")
+        [options.file_name, :js].compact.join(".")
       end
       
       def app_name
-        options.app_name || rails_app_name
-      end
-      
-      def rails_app_name
-        # get app name and convert to capcase
-        Rails.root.to_s.split('/').last.titlecase.split.join
+        options.app_name
       end
       
       def available_views

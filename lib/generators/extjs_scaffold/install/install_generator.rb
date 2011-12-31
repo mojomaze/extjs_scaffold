@@ -1,9 +1,13 @@
+require 'generators/extjs_scaffold'
+
 module ExtjsScaffold
   module Generators
     class InstallGenerator < Rails::Generators::Base
 
-      class_option :file_name, :desc => "Name of file used to hold Ext.application", :aliases => '-n'
-      class_option :app_name, :desc => "Name of app used in Ext.application", :aliases => '-a'
+      class_option :file_name, :desc => "Name of file used to hold Ext.application", 
+                    :aliases => '-n', :default => ExtjsScaffold::Generators::Base.rails_app_name
+      class_option :app_name, :desc => "Name of app used in Ext.application", 
+                    :aliases => '-a', :default => ExtjsScaffold::Generators::Base.rails_app_name
 
       def self.source_root
         @source_root ||= File.expand_path(File.join(File.dirname(__FILE__), 'templates'))
@@ -65,18 +69,14 @@ module ExtjsScaffold
       protected
       
       def app_file_name
-        file_name = options.file_name || rails_app_name
-        [file_name, :js].compact.join(".")
+        #file_name = options.file_name || rails_app_name
+        [options.file_name, :js].compact.join(".")
       end
       
       def app_name
-        options.app_name || rails_app_name
+        options.app_name
       end
       
-      def rails_app_name
-        # get app name and convert to capcase
-        Rails.root.to_s.split('/').last.titlecase.split.join
-      end
     end
   end
 end

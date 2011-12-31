@@ -1,4 +1,4 @@
-Feature: Generating things
+Feature: Generate Extjs Install and Scaffold
   In order to use extjs as a scaffold replacement
   As a user of Rails3 and extjs4
 	I would like to generate an extjs scaffold
@@ -58,10 +58,13 @@ Feature: Generating things
 		"""
 		Your bundle is complete!
 		"""
+		And I run `rails g rspec:install`
+		Then the following files should exist:
+			| spec/spec_helper.rb |
 		And I run `rails g extjs_scaffold:install`
 		Then the following files should exist:
 			| app/assets/javascripts/TestApp.js |
-		And I run `rails g extjs_scaffold:scaffold widget name:string sku:string in_stock:boolean price:decimal last_received_on:date`
+		And I run `rails g extjs_scaffold:scaffold widget name:string sku:string in_stock:boolean price:decimal last_received_on:date --test-framework=test_unit`
 		Then the following files should exist:
 			| app/assets/javascripts/controller/Widgets.js |
 			| app/controllers/widgets_controller.rb |

@@ -12,16 +12,19 @@
 -%>
 <% attributes.select {|attr| attr.reference? }.each do |attribute| -%>
   
+  validates :<%= attribute.name %>_id, :presence => true
+
   def <%= attribute.name %>_<%= reference_field(attribute) %>
     <%= attribute.name %>.<%= reference_field(attribute) %> if <%= attribute.name %>
   end
-  
+
   def <%= attribute.name %>_<%= reference_field(attribute) %>=(<%= reference_field(attribute) %>)
     # empty setter for update_all
   end
   <% virtual_fields["#{attribute.name}_#{reference_field(attribute)}"] = "#{attribute.name.pluralize}.#{reference_field(attribute)}" -%>
   <% join_tables << ":#{attribute.name}" -%>
 <% end -%>
+
   # search or return all
   def self.search(query, page, size, sort_column, sort_direction)
   <% if virtual_fields.count > 0 -%>

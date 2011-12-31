@@ -209,4 +209,20 @@ describe ExtjsScaffold::Generators::ScaffoldGenerator do
       end
     }
   end
+  
+  it "generates scaffold with rspec controller test" do
+    controller_name = "widget"
+    run_generator %w(complex_model_name item:references widget:references name:string color:string --orm=active_record --test-framework=rspec)
+  
+    destination_root.should have_structure {
+      directory "spec" do
+        directory "models" do
+          file "complex_model_name_spec.rb"
+        end
+        directory "controllers" do
+          file "complex_model_names_controller_spec.rb"
+        end
+      end
+    }
+  end
 end

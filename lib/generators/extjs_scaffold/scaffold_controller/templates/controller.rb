@@ -86,15 +86,15 @@ class <%= controller_class_name %>Controller < ApplicationController
           end
         end
       rescue ActiveRecord::RecordNotFound
-        @errors << "<div><b>Record Not Found - Changes rolled back</div>"
+        @errors << "<div>Record Not Found - Changes rolled back</div>"
         raise ActiveRecord::Rollback
       end
     end
     respond_with @errors do |format|
       if @errors.size > 0
-        format.any { render :json => { :success => false, :errorMsg => @errors.join }.to_json, :layout => false }
+        format.json { render :json => { :success => false, :errors => @errors.join }.to_json, :layout => false }
       else
-        format.any { render :json => { :success => true }.to_json, :layout => false }
+        format.json { render :json => { :success => true }.to_json, :layout => false }
       end
     end
   end
@@ -117,15 +117,15 @@ class <%= controller_class_name %>Controller < ApplicationController
           end
         end
       rescue ActiveRecord::RecordNotFound
-        @errors << "<div><b>Record Not Found - Changes rolled back</div>"
+        @errors << "<div>Record Not Found - Changes rolled back</div>"
         raise ActiveRecord::Rollback
       end
     end
     respond_with @errors do |format|
       if @errors.size > 0
-        format.any { render :json => { :success => false, :errorMsg => @errors.join }.to_json, :layout => false }
+        format.json { render :json => { :success => false, :errors => @errors.join }.to_json, :layout => false }
       else
-        format.any { render :json => { :success => true }.to_json, :layout => false }
+        format.json { render :json => { :success => true }.to_json, :layout => false }
       end
     end
   end
