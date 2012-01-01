@@ -124,9 +124,9 @@ module ExtjsScaffold
 
       def copy_test_files
         case options[:test_framework]
-        when 'rspec'
+        when :rspec, 'rspec'
           template "tests/controller_spec.rb", File.join("spec/controllers", "#{controller_file_name}_controller_spec.rb")
-        when 'test_unit'
+        when :test_unit, 'test_unit'
         end
       end
       
