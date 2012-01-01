@@ -74,10 +74,16 @@ Feature: Generate Extjs Install and Scaffold
 				| app/assets/javascripts/controller/Parts.js |
 				| app/controllers/parts_controller.rb |
 				| app/models/part.rb |
+				| spec/controllers/parts_controller_spec.rb |
 		And I run `rake db:migrate`
 		Then the output should contain:
 		"""
 		CreateParts: migrated
 		"""
 		And I run `rake db:test:prepare`
+		And I run `rspec spec`
+		Then the output should contain:
+		"""
+		0 failures
+		"""
 		
