@@ -127,6 +127,7 @@ module ExtjsScaffold
         when :rspec, 'rspec'
           template "tests/controller_spec.rb", File.join("spec/controllers", "#{controller_file_name}_controller_spec.rb")
         when :test_unit, 'test_unit'
+          template "tests/controller_test.rb", File.join("test/functional", "#{controller_file_name}_controller_test.rb")
         end
       end
       

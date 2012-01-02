@@ -16,8 +16,7 @@ Feature: Generate Extjs Install and Scaffold
 			gem "kaminari"
 			gem "extjs_renderer", "~> 0.1.0"
 			gem 'extjs_scaffold', :path => '../../../'
-			gem "rspec", "~> 2.7.0"
-		  gem "rspec-rails", "~> 2.7.0"
+			
 			"""
 		And I overwrite "app/views/layouts/application.html.erb" with:
 			"""
@@ -58,32 +57,68 @@ Feature: Generate Extjs Install and Scaffold
 		"""
 		Your bundle is complete!
 		"""
-		And I run `rails g rspec:install`
-		Then the following files should exist:
-			| spec/spec_helper.rb |
 		And I run `rails g extjs_scaffold:install`
 		Then the following files should exist:
 			| app/assets/javascripts/TestApp.js |
-		And I run `rails g extjs_scaffold:scaffold widget name:string sku:string in_stock:boolean price:decimal last_received_on:date --test-framework=test_unit`
+		And I run `rails g extjs_scaffold:scaffold category name:string`
+			Then the following files should exist:
+				| app/assets/javascripts/controller/Categories.js |
+				| app/controllers/categories_controller.rb |
+				| app/models/category.rb |
+				| app/views/categories/index.html.erb |
+				| test/functional/categories_controller_test.rb |
+		And I run `rails g extjs_scaffold:scaffold product category:references name:string`
+			Then the following files should exist:
+				| app/assets/javascripts/controller/Products.js |
+				| app/controllers/products_controller.rb |
+				| app/models/product.rb |
+				| app/views/products/index.html.erb |					
+				| test/functional/products_controller_test.rb |
+		And I append to "Gemfile" with:
+			"""
+			gem "rspec", "~> 2.7.0"
+		  gem "rspec-rails", "~> 2.7.0"
+			"""
+		And I run `bundle install`
+		Then the output should contain:
+		"""
+		Your bundle is complete!
+		"""
+		And I run `rails g rspec:install`
+		Then the following files should exist:
+			| spec/spec_helper.rb |
+		And I run `rails g extjs_scaffold:scaffold widget name:string sku:string in_stock:boolean price:decimal last_received_on:date --template_engine=haml`
 		Then the following files should exist:
 			| app/assets/javascripts/controller/Widgets.js |
 			| app/controllers/widgets_controller.rb |
 			| app/models/widget.rb |
+			| app/views/widgets/index.html.haml |
+			| spec/controllers/widgets_controller_spec.rb |
 		And I run `rails g extjs_scaffold:scaffold part widget:references name:string quantity:integer --template_engine=haml --reference-fields widget:sku`
-			Then the following files should exist:
-				| app/assets/javascripts/controller/Parts.js |
-				| app/controllers/parts_controller.rb |
-				| app/models/part.rb |
-				| spec/controllers/parts_controller_spec.rb |
+		Then the following files should exist:
+			| app/assets/javascripts/controller/Parts.js |
+			| app/controllers/parts_controller.rb |
+			| app/models/part.rb |
+			| app/views/parts/index.html.haml |
+			| spec/controllers/parts_controller_spec.rb |
 		And I run `rake db:migrate`
 		Then the output should contain:
 		"""
 		CreateParts: migrated
 		"""
 		And I run `rake db:test:prepare`
+		And I run `ruby -Itest test/functional/categories_controller_test.rb`
+		Then the output should contain:
+		"""
+		0 failures, 0 errors, 0 skips
+		"""
+		And I run `ruby -Itest test/functional/products_controller_test.rb`
+		Then the output should contain:
+		"""
+		0 failures, 0 errors, 0 skips
+		"""
 		And I run `rspec spec`
 		Then the output should contain:
 		"""
 		0 failures
 		"""
-		

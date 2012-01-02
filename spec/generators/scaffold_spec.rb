@@ -225,4 +225,20 @@ describe ExtjsScaffold::Generators::ScaffoldGenerator do
       end
     }
   end
+  
+  it "generates scaffold with test_unit controller test" do
+    controller_name = "widget"
+    run_generator %w(complex_model_name item:references widget:references name:string color:string --orm=active_record --test-framework=test_unit)
+  
+    destination_root.should have_structure {
+      directory "test" do
+        directory "unit" do
+          file "complex_model_name_test.rb"
+        end
+        directory "functional" do
+          file "complex_model_names_controller_test.rb"
+        end
+      end
+    }
+  end
 end
