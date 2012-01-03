@@ -5,12 +5,19 @@ Rails 3.1 Scaffold generator for Extjs 4
 ## Usage
 
 ### Install
+1) Add pagination gem to Gemfile
+	
+	gem "kaminari"
+	
+	or
+	
+	gem "will_paginate", "~> 3.0.0"
 
-1) Install Sencha Extjs 4 into public
+2) Install Sencha Extjs 4 into public
 	
 	public/extjs
 
-2) Add Extjs to app/views/layouts/application.html.erb
+3) Add Extjs to app/views/layouts/application.html.erb
 
 	<html>
 	<head>
@@ -28,7 +35,7 @@ Rails 3.1 Scaffold generator for Extjs 4
 	</body>
 	</html>
 
-3) Add Extjs MVC structure app/assets/javascripts/application.js
+4) Add Extjs MVC structure app/assets/javascripts/application.js
 
 		//= require_self
 		//= require_tree ./ux
@@ -39,7 +46,7 @@ Rails 3.1 Scaffold generator for Extjs 4
 		//= require_tree ./controller
 		//= require_tree .
 
-4) Run the install generator
+5) Run the install generator
 
 	rails generate extjs_scaffold:install
 	
