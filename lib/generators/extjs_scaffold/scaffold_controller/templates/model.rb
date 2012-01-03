@@ -3,7 +3,7 @@
   query = []
   params = []
   attributes.each do |a|
-    a.reference? ?  query << "#{a.name.pluralize}.name LIKE ?" : query << "#{plural_table_name}.#{a.name} LIKE ?"
+    a.reference? ?  query << "#{a.name.pluralize}.#{reference_field(a)} LIKE ?" : query << "#{plural_table_name}.#{a.name} LIKE ?"
     params << "search"
   end
   
@@ -12,7 +12,7 @@
 -%>
 <% attributes.select {|attr| attr.reference? }.each do |attribute| -%>
   
-  validates :<%= attribute.name %>_id, :presence => true
+  validates :<%= attribute.name %>_<%= reference_field(attribute) %>, :presence => true
 
   def <%= attribute.name %>_<%= reference_field(attribute) %>
     <%= attribute.name %>.<%= reference_field(attribute) %> if <%= attribute.name %>

@@ -38,12 +38,14 @@ class <%= controller_class_name %>Controller < ApplicationController
   def create
     params[:<%= singular_table_name %>] = filter_params(params[:<%= singular_table_name %>])
     @<%= singular_table_name %> = <%= orm_class.build(class_name, "params[:#{singular_table_name}]") %>
-    @<%= orm_instance.save %>
-    respond_with @<%= singular_table_name %> do |format|
-      if @<%= singular_table_name %>.invalid?
-        format.json { render :json => { :success => false, :error_count => @<%= singular_table_name %>.errors.count, :errors => @<%= singular_table_name %>.errors }.to_json, :layout => false }
-      else
+    if @<%= orm_instance.save %>
+      respond_with @<%= singular_table_name %> do |format|
         format.json { render :extjs => @<%= singular_table_name %>, :methods => related_attributes }
+      end
+    else
+      respond_to do |format|
+        format.json { render :json => { :success => false, :error_count => @<%= singular_table_name %>.errors.count, :errors => @<%= singular_table_name %>.errors }.to_json, :layout => false }
+        format.html
       end
     end
   end

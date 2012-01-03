@@ -91,16 +91,9 @@ describe <%= controller_class_name %>Controller do
     end
 
     describe "with invalid params" do
-      it "assigns a newly created but unsaved <%= singular_table_name %> as @<%= singular_table_name %>" do
-        # Trigger the behavior that occurs when invalid params are submitted
-        <%= class_name %>.any_instance.stub(:save).and_return(false)
-        post :create, :<%= singular_table_name %> => valid_attributes
-        assigns(:<%= singular_table_name %>).should be_a_new(<%= class_name %>)
-      end
-
       it "responds to xhr json requests" do
         # Trigger the behavior that occurs when invalid params are submitted
-        <%= class_name %>.any_instance.stub(:invalid?).and_return(true)
+        <%= class_name %>.any_instance.stub(:save).and_return(false)
         xhr :post, :create, :<%= singular_table_name %> => valid_attributes, :format => :json
         json = ActiveSupport::JSON.decode(response.body)
         json['success'].should be_false
