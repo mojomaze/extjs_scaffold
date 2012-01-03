@@ -1,8 +1,8 @@
 Description:
-    Generates an Extjs Scaffold Controller for a given resource
+    Generates an Extjs Scaffold for a given resource
 
 Example:
-    rails generate extjs_scaffold:scaffold_controller widget name:string quantity:integer
+    rails generate extjs_scaffold:scaffold widget name:string quantity:integer
 
     This will create:
         app/assets/javascripts/controller/Widgets.js
@@ -16,5 +16,9 @@ Example:
         app/assets/javascripts/widgets.js.coffee
         app/assets/stylesheets/widgets.css.scss
         app/controllers/widgets_controller.rb
+        app/models/widget.rb
         app/views/widgets/index.html.erb
+        db/migrate/timestamp_create_widgets.rb
+        test/fixtures/widgets.yml
         test/functional/widgets_controller.rb
+        test/unit/widget_test.rb

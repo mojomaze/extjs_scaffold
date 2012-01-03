@@ -6,6 +6,11 @@ Example:
     rails generate extjs_scaffold:install
 
     This will create:
+        app/assests/images/extjs_scaffold/add.gif
+        app/assests/images/extjs_scaffold/application_form_edit.png
+        app/assests/images/extjs_scaffold/delete.gif
+        app/assests/images/extjs_scaffold/README.txt
+        app/assests/images/extjs_scaffold/tick.png
         app/assets/javascripts/MyCoolApp.js
         app/assets/javascripts/model/ParentCombo.js
         app/assets/javascripts/util/Format.js
@@ -18,3 +23,6 @@ Example:
         app/assets/javascripts/ux/grid/Panel.js
         app/assets/javascripts/ux/toolbar/Scrolling.js
         app/assets/javascripts/ux/window/EditWindow.js
+        app/assets/javascripts/ux/window/UpdateWindow.js
+        app/assets/stylesheets/extjs_scaffold.css.scss
+        public/images/extjs_scaffold/tick.png
