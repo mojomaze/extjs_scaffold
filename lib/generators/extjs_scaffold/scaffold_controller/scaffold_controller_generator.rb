@@ -291,6 +291,25 @@ module ExtjsScaffold
       def updatefield_width(attribute) 
         return %w(boolean date integer).include?(attribute.type.to_s) ? 275 : 575
       end
+      
+      private
+
+        def resource_attributes
+          key_value singular_table_name, "{ #{attributes_hash} }"
+        end
+
+        def attributes_hash
+          return if accessible_attributes.empty?
+
+          accessible_attributes.map do |a|
+            name = a.name
+            key_value name, "@#{singular_table_name}.#{name}"
+          end.sort.join(', ')
+        end
+
+        def accessible_attributes
+          attributes.reject(&:reference?)
+        end
     end
   end
 end

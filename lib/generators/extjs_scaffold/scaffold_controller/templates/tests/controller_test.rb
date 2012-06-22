@@ -24,7 +24,7 @@ end
 
   test "should create <%= singular_table_name %>" do
     assert_difference('<%= class_name %>.count') do
-      post :create, <%= singular_table_name %>: @<%= singular_table_name %>.attributes
+      post :create, <%= resource_attributes %>
     end
 
     assert_redirected_to <%= singular_table_name %>_path(assigns(:<%= singular_table_name %>))
@@ -32,7 +32,7 @@ end
   
   test "should create <%= singular_table_name %> via xhr json requests" do
     assert_difference('<%= class_name %>.count') do
-      xhr :post, :create, <%= singular_table_name %>: @<%= singular_table_name %>.attributes, :format => :json
+      xhr :post, :create, <%= resource_attributes %>, :format => :json
     end
     
     json = ActiveSupport::JSON.decode(@response.body)
@@ -55,7 +55,7 @@ end
   end
    
   test "should update <%= singular_table_name %> via xhr json" do
-    xhr :put, :update, id: @<%= singular_table_name %>.to_param, <%= singular_table_name %>: @<%= singular_table_name %>.attributes, :format => :json
+    xhr :put, :update, id: @<%= singular_table_name %>.to_param, <%= resource_attributes %>, :format => :json
     json = ActiveSupport::JSON.decode(@response.body)
     assert json['success']
     assert_equal json['data']['id'], @<%= singular_table_name %>.id

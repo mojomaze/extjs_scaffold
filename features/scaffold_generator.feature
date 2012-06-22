@@ -13,7 +13,7 @@ Feature: Generate Extjs Install and Scaffold
 		And I append to "Gemfile" with:
 			"""
 			gem "haml"
-			gem "kaminari"
+			gem "kaminari", "~> 0.13.0"
 			gem "extjs_renderer", "~> 0.1.0"
 			gem 'extjs_scaffold', :path => '../../../'
 			
@@ -74,6 +74,10 @@ Feature: Generate Extjs Install and Scaffold
 				| app/models/product.rb |
 				| app/views/products/index.html.erb |					
 				| test/functional/products_controller_test.rb |
+		And I run `rails g scaffold team name:string`
+			Then the following files should exist:
+				| app/views/products/index.html.erb |					
+				| test/functional/teams_controller_test.rb |
 		And I append to "Gemfile" with:
 			"""
 			gem "rspec", "~> 2.7.0"
