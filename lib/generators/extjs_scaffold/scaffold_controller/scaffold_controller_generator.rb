@@ -30,13 +30,14 @@ module ExtjsScaffold
           template "model.rb", "app/models/#{controller_file_name}_tmp.rb"
           f = File.open "#{destination_root}/app/models/#{controller_file_name}_tmp.rb", "r"
           model_methods = f.read
-          # insert after belongs_to or inject
-          refs = attributes.select{|attr| attr.reference? }.collect{|a| a.name}
+          # make related tables updateable - add to attr_accessible
+          refs = reference_attributes.map{|a| ":#{a.name}_id, :#{a.name}_#{reference_field(a)}"}
           if refs.size > 0
-            insert_into_file "app/models/#{singular_table_name}.rb", model_methods, :after => "belongs_to :#{refs.last}"
-          else
-            inject_into_class "app/models/#{singular_table_name}.rb", singular_table_name.capitalize, model_methods
+            refs_attr = refs.sort.join(", ")
+            insert_into_file "app/models/#{singular_table_name}.rb", ", "+refs_attr, :after => /attr_accessible.*/
           end
+          # add search with pagination class method
+          insert_into_file "app/models/#{singular_table_name}.rb", "\n"+model_methods, :after => /attr_accessible.*/
           remove_file "app/models/#{controller_file_name}_tmp.rb"
         end
       end
@@ -309,6 +310,10 @@ module ExtjsScaffold
 
         def accessible_attributes
           attributes.reject(&:reference?)
+        end
+        
+        def reference_attributes
+          attributes.select(&:reference?)
         end
     end
   end
