@@ -55,10 +55,6 @@ module ExtjsScaffold
         empty_directory File.join("app/assets/javascripts/ux", "grid")
         template 'GridPanel.js', File.join('app/assets/javascripts/ux/grid/', 'Panel.js')
         
-        #toolbar
-        empty_directory File.join("app/assets/javascripts/ux", "toolbar")
-        template 'ScrollingToolbar.js', File.join('app/assets/javascripts/ux/toolbar/', 'Scrolling.js')
-        
         #window
         empty_directory File.join("app/assets/javascripts/ux", "window")
         template 'EditWindow.js', File.join('app/assets/javascripts/ux/window/', 'EditWindow.js')

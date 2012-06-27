@@ -84,11 +84,6 @@ describe ExtjsScaffold::Generators::InstallGenerator do
                   contains "Ext.define('#{app_name}.ux.grid.Panel', {"
                 end
               end
-              directory "toolbar" do
-                file "Scrolling.js" do
-                  contains "Ext.define('#{app_name}.ux.toolbar.Scrolling', {"
-                end
-              end
               directory "window" do
                 file "EditWindow.js" do
                   contains "Ext.define('#{app_name}.ux.window.EditWindow', {"
