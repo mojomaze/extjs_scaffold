@@ -6,6 +6,7 @@ Rails 3.2 Scaffold generator for Extjs 4.1
 
 ### Install
 1) Add extjs_scaffold, extjs_render, and pagination to Gemfile
+	
 	gem 'extjs_scaffold'
 	gem 'extjs_renderer'
 	gem "kaminari"
