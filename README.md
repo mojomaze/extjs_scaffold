@@ -62,7 +62,9 @@ These can be customized using the --file-name and --app-name class options
 	
 ### Scaffold
 
-	rails generate scaffold extjs_scaffold:scaffold widget name:string
+	rails generate extjs_scaffold:scaffold widget name:string
+	
+	rake db:migrate
 	
 Class Options
 

@@ -24,4 +24,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency "cucumber-rails"
   s.add_development_dependency "aruba", "< 0.4.7"
   s.add_runtime_dependency "rails", "~> 3.2.0"
+  s.add_runtime_dependency "extjs_renderer"
 end
