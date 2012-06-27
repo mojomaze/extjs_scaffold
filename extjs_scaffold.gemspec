@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.authors     = ["mwinkler"]
   s.email       = ["mhwinkler@gmail.com"]
   s.homepage    = "https://github.com/mojomaze/extjs_scaffold"
-  s.summary     = "Scaffold Generator for Rails 3.1 and Extjs 4"
-  s.description = "Scaffold Generator for Rails 3.1 and Sencha Extjs 4"
+  s.summary     = "Scaffold Generator for Rails 3.2 and Extjs 4.1"
+  s.description = "Scaffold Generator for Rails 3.2 and Sencha Extjs 4.1"
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")

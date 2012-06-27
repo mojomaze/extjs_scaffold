@@ -1,6 +1,6 @@
 # ExtjsScaffold
 
-Rails 3.1 Scaffold generator for Extjs 4
+Rails 3.2 Scaffold generator for Extjs 4.1
 
 ## Usage
 
